@@ -7,27 +7,34 @@ namespace CvWindowScanner
 {
     internal class Program
     {
+        private static string _currentState = "";
 
         public static void Main(string[] args)
         {
-
+            
             var template = Cv2.ImRead("C:\\Users\\trisc\\RiderProjects\\TarkovTests\\CvWindowScanner\\img\\template.bmp");
 
-            WindowScanner.Init();
-
-
-            Console.WriteLine("Pushing..");
+            WindowScanner.Init("Untitled - Notepad");
             
-            // Preserve to get 
+            while (!WindowScanner.Initialized)
+            {
+                Thread.Sleep(100); 
+            }
+            
+            
+            // Preserved scan
             WindowScanner.PushToQueue(
                 true,
                 template,
                 CvSearch.WindowRegion.FullWindow,
                 0.7,
-                (b,p)=> Console.WriteLine($"[{(b?"":"NOT ")}FOUND]{(b? $" @ ({p.X}, {p.Y})":"")}"));
-            
-            
-            Thread.Sleep(100000);
+                (b,p)=> _currentState =(b? "Inventory" : "Unknown"));
+
+            while (WindowScanner.Initialized)
+            {
+                Console.WriteLine($"State: {_currentState}");
+                Thread.Sleep(1000);
+            }
             
             
             WindowScanner.Stop();

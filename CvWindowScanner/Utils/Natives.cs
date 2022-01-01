@@ -34,7 +34,7 @@ namespace CvWindowScanner.Utils
         }
         
 
-        public static IntPtr GetHwnd(string title, bool showinfo = false)
+        public static bool GetHwnd(string title,out IntPtr ptr, bool showinfo = false)
         {
             foreach (Process window in Process.GetProcesses())
             {
@@ -43,10 +43,21 @@ namespace CvWindowScanner.Utils
                 {
                     if(showinfo)
                         Console.WriteLine($"[{window.MainWindowTitle}] -> [0x{window.MainWindowHandle.ToInt32():X}]");
-                    return window.MainWindowHandle;
+                    ptr = window.MainWindowHandle;
+                    return true;
                 }
             }
-            return IntPtr.Zero;
+            Console.WriteLine($"Window with title [{title}] not found. Windows available:");
+            foreach (Process window in Process.GetProcesses())
+            {
+                if (window.MainWindowHandle != IntPtr.Zero)
+                {
+                    Console.WriteLine($"\t{window.MainWindowTitle}");
+                }
+            }
+
+            ptr = IntPtr.Zero;
+            return false;
         }
         
         public static double GetWindowsScaling()

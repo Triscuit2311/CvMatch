@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.Remoting.Messaging;
 using OpenCvSharp;
 using System.Windows.Forms;
 using CvWindowScanner.Utils;
@@ -51,12 +52,7 @@ namespace CvWindowScanner
                 Loc = loc;
             }
         }
-        private static Rectangle GetGameWindow(string title)
-        {
-            return ToScreenClampedRectangle(
-                Natives.GetWindowRect(
-                    Natives.GetHwnd(title)));  
-        }
+
         private static Rectangle ToScreenClampedRectangle(Rectangle rect)
         {
             return new Rectangle(
@@ -214,15 +210,16 @@ namespace CvWindowScanner
         /// Sets up the capturer with a chosen window as it's target.
         /// Call each time the window location needs to be updated.
         /// </summary>
-        /// <param name="title">Title of the window to capture.</param>
+        /// <param name="ptr">Window Handle Pointer.</param>
         /// <param name="origin">(out) The X,Y origin of the window, for calculations.</param>
-        public static void UpdateWindowCaptureLocation(string title, out System.Drawing.Point origin)
+        public static bool UpdateWindowCaptureLocation(IntPtr ptr, out System.Drawing.Point origin)
         {
-            var area = GetGameWindow(title);
-            origin = area.Location;
-            DXGICapturer.SetCaptureRect(area);
+            var rect = ToScreenClampedRectangle(Natives.GetWindowRect(ptr));
+            origin = rect.Location;
+            DXGICapturer.SetCaptureRect(rect);
+            return true;
         }
-
+        
         /// <summary>
         /// Scans entire target window for template.
         /// </summary>

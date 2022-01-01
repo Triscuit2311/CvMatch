@@ -4,6 +4,7 @@ using System.Diagnostics.PerformanceData;
 using System.Drawing;
 using System.Drawing.Configuration;
 using System.Threading;
+using CvWindowScanner.Utils;
 using OpenCvSharp;
 using Point = OpenCvSharp.Point;
 
@@ -14,8 +15,11 @@ namespace CvWindowScanner
     {
         private static Thread _scanThread;
         private static bool _threadStopFlag;
-        private static bool _initialized;
+        public static bool Initialized { get; private set; }
         private static List<ScanData> _scanQueue = new List<ScanData>();
+        private static string _windowTitle;
+        private static IntPtr _windowPtr = IntPtr.Zero;
+        
         
 
         private class ScanData
@@ -53,7 +57,7 @@ namespace CvWindowScanner
         /// <exception cref="Exception">Throw if window scanner needs to be initialized. Use Init().</exception>
         public static void PushToQueue(bool preserve, Mat template, CvSearch.WindowRegion region,double threshold, Action<bool, Point> callback)
         {
-            if (!_initialized)
+            if (!Initialized)
                 throw new Exception("WindowScanner needs to be initialized.");
             
             _scanQueue.Add(new ScanData(
@@ -67,11 +71,16 @@ namespace CvWindowScanner
         /// <summary>
         /// Spawns the scan thread.
         /// </summary>
-        public static void Init()
+        public static void Init(string windowTitle)
         {
+            _windowTitle = windowTitle;
+
+            if (!Natives.GetHwnd(_windowTitle, out _windowPtr, true)) return;
+
+
+            Initialized = true;
             _scanThread = new Thread(new ThreadStart(ScanThreadOperation));
             _scanThread.Start();
-            _initialized = true;
         }
         
         /// <summary>
@@ -79,22 +88,18 @@ namespace CvWindowScanner
         /// </summary>
         public static void Stop()
         {
-            _initialized = false;
+            Initialized = false;
             _threadStopFlag = true;
             _scanThread.Join();
         }
 
         private static void ScanThreadOperation()
         {
-                        
             DXGICapturer.Init();
-
-
+            
             //todo: add UpdateWindow() so we may update the window externally at discretion
-            //todo: add title as assignable on class initialization
-            
-            CvSearch.UpdateWindowCaptureLocation("EscapeFromTarkov",out var windowPosition);
-            
+            CvSearch.UpdateWindowCaptureLocation(_windowPtr, out var windowPosition);
+               
             while (true)
             {
                 if (_threadStopFlag) break;
@@ -108,7 +113,6 @@ namespace CvWindowScanner
                         _scanQueue[i].Template,
                         _scanQueue[i].Threshold,
                         out var loc);
-                    Console.WriteLine("Scanning..");
                     
                     //todo: adjust location to be screen-relative
                     _scanQueue[i].PerformCallback(flag, loc);

@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
+using CvWindowScanner.Modules;
+using CvWindowScanner.Utils;
 using OpenCvSharp;
 
 
@@ -7,12 +10,11 @@ namespace CvWindowScanner
 {
     internal class Program
     {
-        private static string _currentState = "";
-
         public static void Main(string[] args)
         {
             
-            var template = Cv2.ImRead("C:\\Users\\trisc\\RiderProjects\\TarkovTests\\CvWindowScanner\\img\\template.bmp");
+            var bitcoinTemplate = 
+                Cv2.ImRead("C:\\Users\\trisc\\RiderProjects\\TarkovTests\\CvWindowScanner\\img\\template.bmp");
 
             WindowScanner.Init("Untitled - Notepad");
             
@@ -20,29 +22,26 @@ namespace CvWindowScanner
             {
                 Thread.Sleep(100); 
             }
-            
-            
-            // Preserved scan
-            WindowScanner.PushToQueue(
-                true,
-                template,
+
+            GameState bitcoinPresent = new GameState(
                 CvSearch.WindowRegion.FullWindow,
-                0.7,
-                (b,p)=> _currentState =(b? "Inventory" : "Unknown"));
+                new List<Mat> {bitcoinTemplate},
+                0.7);
 
             while (WindowScanner.Initialized)
             {
-                Console.WriteLine($"State: {_currentState}");
-                Thread.Sleep(1000);
+                break;
             }
             
+            DebugScreenShotter.Setup();
+            
+            
+            Console.ReadLine();
             
             WindowScanner.Stop();
-
-
         }
         
-        
+
     }
     
   

@@ -2,16 +2,14 @@
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.IO;
 using System.Threading;
 using SharpDX;
 using SharpDX.Direct3D11;
 using SharpDX.DXGI;
 using Rectangle = System.Drawing.Rectangle;
-using Resource = SharpDX.DXGI.Resource;
 
 
-namespace CvWindowScanner
+namespace CvWindowScanner.Modules
 {
     public static class DXGICapturer
     {

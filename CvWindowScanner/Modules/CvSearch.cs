@@ -2,6 +2,7 @@
 using System.Runtime.Remoting.Messaging;
 using OpenCvSharp;
 using System.Windows.Forms;
+using CvWindowScanner.Modules;
 using CvWindowScanner.Utils;
 using OpenCvSharp.Extensions;
 using Point = OpenCvSharp.Point;
@@ -11,11 +12,13 @@ namespace CvWindowScanner
 {
     public static class CvSearch
     {
-        private static Mat _lastFrame = new Mat();
-        static Mat GetLastScreenAsMat()
+        public static Mat LastFrame = new Mat();
+        private static Mat GetLastScreenAsMat()
         {
             return DXGICapturer.GetLast().ToMat().CvtColor(ColorConversionCodes.BGRA2BGR);
         }
+        
+        
 
         /// <summary>
         /// Window Regions for use with FindImageOnCaptureWindowRegion(...).
@@ -63,115 +66,115 @@ namespace CvWindowScanner
         }
         private static Mat GetLastFrameRegion(WindowRegion region, out Point offsets)
         {
-            Rectangle area = new Rectangle(0,0,_lastFrame.Width,_lastFrame.Height);
+            Rectangle area = new Rectangle(0,0,LastFrame.Width,LastFrame.Height);
             
             switch (region)
             {
                 case WindowRegion.FullWindow:
                     offsets = new Point(0, 0);
-                    return _lastFrame;
+                    return LastFrame;
                 case WindowRegion.UpperLeft   :
                     area.X = 0;
                     area.Y = 0;
-                    area.Width = _lastFrame.Width / 3;
-                    area.Height = _lastFrame.Height / 3;
+                    area.Width = LastFrame.Width / 3;
+                    area.Height = LastFrame.Height / 3;
                     break;
                 case WindowRegion.UpperCenter :
-                    area.X = _lastFrame.Width / 3;
+                    area.X = LastFrame.Width / 3;
                     area.Y = 0;
-                    area.Width = _lastFrame.Width / 3;
-                    area.Height = _lastFrame.Height / 3;
+                    area.Width = LastFrame.Width / 3;
+                    area.Height = LastFrame.Height / 3;
                     break;
                 case WindowRegion.UpperRight  :
-                    area.X = (_lastFrame.Width / 3)*2;
+                    area.X = (LastFrame.Width / 3)*2;
                     area.Y = 0;
-                    area.Width = _lastFrame.Width / 3;
-                    area.Height = _lastFrame.Height / 3;
+                    area.Width = LastFrame.Width / 3;
+                    area.Height = LastFrame.Height / 3;
                     break;
                 case WindowRegion.MiddleLeft  :
                     area.X = 0;
-                    area.Y = _lastFrame.Height / 3;
-                    area.Width = _lastFrame.Width / 3;
-                    area.Height = _lastFrame.Height / 3;
+                    area.Y = LastFrame.Height / 3;
+                    area.Width = LastFrame.Width / 3;
+                    area.Height = LastFrame.Height / 3;
                     break;
                 case WindowRegion.MiddleCenter:
-                    area.X = _lastFrame.Width / 3;
-                    area.Y = _lastFrame.Height / 3;
-                    area.Width = _lastFrame.Width / 3;
-                    area.Height = _lastFrame.Height / 3;
+                    area.X = LastFrame.Width / 3;
+                    area.Y = LastFrame.Height / 3;
+                    area.Width = LastFrame.Width / 3;
+                    area.Height = LastFrame.Height / 3;
                     break;
                 case WindowRegion.MiddleRight :
-                    area.X = (_lastFrame.Width / 3)*2;
-                    area.Y = _lastFrame.Height / 3;
-                    area.Width = _lastFrame.Width / 3;
-                    area.Height = _lastFrame.Height / 3;
+                    area.X = (LastFrame.Width / 3)*2;
+                    area.Y = LastFrame.Height / 3;
+                    area.Width = LastFrame.Width / 3;
+                    area.Height = LastFrame.Height / 3;
                     break;
                 case WindowRegion.LowerLeft   :
                     area.X = 0;
-                    area.Y = (_lastFrame.Height / 3)*2;
-                    area.Width = _lastFrame.Width / 3;
-                    area.Height = _lastFrame.Height / 3;
+                    area.Y = (LastFrame.Height / 3)*2;
+                    area.Width = LastFrame.Width / 3;
+                    area.Height = LastFrame.Height / 3;
                     break;
                 case WindowRegion.LowerCenter :
-                    area.X = _lastFrame.Width / 3;
-                    area.Y = (_lastFrame.Height / 3)*2;
-                    area.Width = _lastFrame.Width / 3;
-                    area.Height = _lastFrame.Height / 3;
+                    area.X = LastFrame.Width / 3;
+                    area.Y = (LastFrame.Height / 3)*2;
+                    area.Width = LastFrame.Width / 3;
+                    area.Height = LastFrame.Height / 3;
                     break;
                 case WindowRegion.LowerRight  :
-                    area.X = (_lastFrame.Width / 3)*2;
-                    area.Y = (_lastFrame.Height / 3)*2;
-                    area.Width = _lastFrame.Width / 3;
-                    area.Height = _lastFrame.Height / 3;
+                    area.X = (LastFrame.Width / 3)*2;
+                    area.Y = (LastFrame.Height / 3)*2;
+                    area.Width = LastFrame.Width / 3;
+                    area.Height = LastFrame.Height / 3;
                     break;
                 case WindowRegion.LeftHalf    :
                     area.X = 0;
                     area.Y = 0;
-                    area.Width = _lastFrame.Width / 2;
-                    area.Height = _lastFrame.Height;
+                    area.Width = LastFrame.Width / 2;
+                    area.Height = LastFrame.Height;
                     break;
                 case WindowRegion.RightHalf   :
-                    area.X = _lastFrame.Width / 2;
+                    area.X = LastFrame.Width / 2;
                     area.Y = 0;
-                    area.Width = _lastFrame.Width / 2;
-                    area.Height = _lastFrame.Height;
+                    area.Width = LastFrame.Width / 2;
+                    area.Height = LastFrame.Height;
                     break;
                 case WindowRegion.UpperHalf   :
                     area.X = 0;
                     area.Y = 0;
-                    area.Width = _lastFrame.Width;
-                    area.Height = _lastFrame.Height / 2;
+                    area.Width = LastFrame.Width;
+                    area.Height = LastFrame.Height / 2;
                     break;
                 case WindowRegion.LowerHalf   :
                     area.X = 0;
-                    area.Y = _lastFrame.Height / 2;
-                    area.Width = _lastFrame.Width;
-                    area.Height = _lastFrame.Height / 2;
+                    area.Y = LastFrame.Height / 2;
+                    area.Width = LastFrame.Width;
+                    area.Height = LastFrame.Height / 2;
                     break;
                 case WindowRegion.LeftThird   :
                     area.X = 0;
                     area.Y = 0;
-                    area.Width = _lastFrame.Width / 3;
-                    area.Height = _lastFrame.Height;
+                    area.Width = LastFrame.Width / 3;
+                    area.Height = LastFrame.Height;
                     break;
                 case WindowRegion.CenterThird :
-                    area.X = _lastFrame.Width / 3;
+                    area.X = LastFrame.Width / 3;
                     area.Y = 0;
-                    area.Width = _lastFrame.Width / 3;
-                    area.Height = _lastFrame.Height;
+                    area.Width = LastFrame.Width / 3;
+                    area.Height = LastFrame.Height;
                     break;
                 case WindowRegion.RightThird  :
-                    area.X = (_lastFrame.Width / 3)*2;
+                    area.X = (LastFrame.Width / 3)*2;
                     area.Y = 0;
-                    area.Width = _lastFrame.Width / 3;
-                    area.Height = _lastFrame.Height;
+                    area.Width = LastFrame.Width / 3;
+                    area.Height = LastFrame.Height;
                     break;
                 default:
                     break;
             }
 
             offsets = new Point(area.X, area.Y);
-           return DXGICapturer.CropAtRect(_lastFrame.ToBitmap(), area)
+           return DXGICapturer.CropAtRect(LastFrame.ToBitmap(), area)
                .ToMat()
                .CvtColor(ColorConversionCodes.BGRA2BGR);
         }
@@ -182,7 +185,7 @@ namespace CvWindowScanner
         /// </summary>
         public static void Refresh()
         {
-            _lastFrame = GetLastScreenAsMat();
+            LastFrame = GetLastScreenAsMat();
         }
         private static TemplateMatchResults TemplateMatchWithThreshold(Mat img, Mat template, double threshold)
         {
@@ -229,7 +232,7 @@ namespace CvWindowScanner
         /// <returns>true if match was found within threshold.</returns>
         public static  bool FindImageOnCaptureWindow(Mat template, double threshold, out Point loc)
         {
-            var res = TemplateMatchWithThreshold(_lastFrame, template, threshold);
+            var res = TemplateMatchWithThreshold(LastFrame, template, threshold);
             loc = res.Loc;
             return res.Success;
         }

@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.PerformanceData;
-using System.Drawing;
-using System.Drawing.Configuration;
 using System.Threading;
 using CvWindowScanner.Utils;
 using OpenCvSharp;
 using Point = OpenCvSharp.Point;
 
 
-namespace CvWindowScanner
+namespace CvWindowScanner.Modules
 {
     public static class WindowScanner
     {
@@ -36,7 +33,7 @@ namespace CvWindowScanner
                 Region = region;
                 Template = template;
                 _callback = callback;
-                this.Threshold = threshold;
+                Threshold = threshold;
             }
 
             public void PerformCallback(bool success, Point screenPosition)

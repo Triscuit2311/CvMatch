@@ -11,32 +11,40 @@ namespace CvWindowScanner.Utils
     public class Natives
     {
         [DllImport("user32.dll")]
-        private static extern bool GetWindowRect(IntPtr hwnd, ref N_RECT rect);
+        private static extern bool GetWindowRect(IntPtr hwnd, ref NRect rect);
 
-        private struct N_RECT
+        private struct NRect
         {
             public int left;
             public int top;
             public int right;
             public int bottom;
+
+            public NRect(int left, int top, int right, int bottom)
+            {
+                this.left = left;
+                this.top = top;
+                this.right = right;
+                this.bottom = bottom;
+            }
         }
 
         public static Rectangle GetWindowRect(IntPtr hwnd)
         {
-            N_RECT nativeRect = default;
+            NRect nativeRect = default;
             GetWindowRect(hwnd, ref nativeRect);
 
             return new Rectangle(
-                (int)nativeRect.left,
-                (int)nativeRect.top,
-                (int)nativeRect.right - (int)nativeRect.left,
-                (int)nativeRect.bottom - (int)nativeRect.top);
+                nativeRect.left,
+                nativeRect.top,
+                nativeRect.right - nativeRect.left,
+                nativeRect.bottom - nativeRect.top);
         }
         
 
         public static bool GetHwnd(string title,out IntPtr ptr, bool showinfo = false)
         {
-            foreach (Process window in Process.GetProcesses())
+            foreach (var window in Process.GetProcesses())
             {
                 window.Refresh();
                 if (window.MainWindowHandle != IntPtr.Zero && window.MainWindowTitle.ToLower().Contains(title.ToLower()))
@@ -48,7 +56,7 @@ namespace CvWindowScanner.Utils
                 }
             }
             Console.WriteLine($"Window with title [{title}] not found. Windows available:");
-            foreach (Process window in Process.GetProcesses())
+            foreach (var window in Process.GetProcesses())
             {
                 if (window.MainWindowHandle != IntPtr.Zero)
                 {
@@ -60,10 +68,10 @@ namespace CvWindowScanner.Utils
             return false;
         }
         
-        public static double GetWindowsScaling()
-        {
-            return Screen.PrimaryScreen.Bounds.Width / SystemParameters.PrimaryScreenWidth;
-        }
+        // public static double GetWindowsScaling()
+        // {
+        //     return Screen.PrimaryScreen.Bounds.Width / SystemParameters.PrimaryScreenWidth;
+        // }
         
 
     }

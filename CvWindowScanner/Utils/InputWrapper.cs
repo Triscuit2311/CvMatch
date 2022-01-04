@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using System.Threading;
+using CvWindowScanner.Modules;
+using OpenCvSharp;
 
 namespace CvWindowScanner.Utils
 {
@@ -10,6 +12,18 @@ namespace CvWindowScanner.Utils
         private static extern uint SendInput(uint nInputs, Input[] pInputs, int cbSize);
         [DllImport("user32.dll")]
         private static extern IntPtr GetMessageExtraInfo();
+        [DllImport("User32.dll")]
+        public static extern bool SetCursorPos(int x, int y);
+        public static void SetCursorPos(Point screenLocation)
+        {
+            SetCursorPos(screenLocation.X, screenLocation.Y);
+        }
+
+        public static void SetCursorWindowRelative(Point windowOffset)
+        {
+            SetCursorPos(WindowScanner.WindowPosition.X+windowOffset.X,
+                WindowScanner.WindowPosition.Y+windowOffset.Y);
+        }
 
         
         public static void MouseScroll(int clicks, bool up = false)

@@ -12,8 +12,7 @@ namespace CvWindowScanner
 {
     internal class Program
     {
-        [DllImport("User32.dll")]
-        public static extern bool SetCursorPos(int x, int y);
+
         //add wait for state
         public static void Main(string[] args)
         {
@@ -168,10 +167,7 @@ namespace CvWindowScanner
             WindowScanner.Stop();
         }
 
-        private static void SetCursorPos(Point screenLocation)
-        {
-            SetCursorPos(screenLocation.X, screenLocation.Y);
-        }
+
     }
     
   

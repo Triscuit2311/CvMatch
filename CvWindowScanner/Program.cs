@@ -17,10 +17,6 @@ namespace CvWindowScanner
         //add wait for state
         public static void Main(string[] args)
         {
-            Thread.Sleep(2000);
-            InputWrapper.MouseScroll(10,true);
-            return;
-            
             
             
             WindowScanner.Init("EscapeFromTarkov");
@@ -152,10 +148,10 @@ namespace CvWindowScanner
                 if (!flag)
                     currState = "Unknown";
 
-                if (go.WaitForFind(100))
-                {
-                    SetCursorPos(WindowScanner.WindowPosition);
-                }
+                // if (go.WaitForFind(100))
+                // {
+                //    // SetCursorPos(WindowScanner.WindowPosition);
+                // }
 
 
                 if (currState == lastState) continue;

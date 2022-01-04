@@ -215,10 +215,10 @@ namespace CvWindowScanner
         /// </summary>
         /// <param name="ptr">Window Handle Pointer.</param>
         /// <param name="origin">(out) The X,Y origin of the window, for calculations.</param>
-        public static bool UpdateWindowCaptureLocation(IntPtr ptr, out System.Drawing.Point origin)
+        public static bool UpdateWindowCaptureLocation(IntPtr ptr, out Point origin)
         {
             var rect = ToScreenClampedRectangle(Natives.GetWindowRect(ptr));
-            origin = rect.Location;
+            origin = new Point(rect.Location.X,rect.Location.Y);
             DXGICapturer.SetCaptureRect(rect);
             return true;
         }

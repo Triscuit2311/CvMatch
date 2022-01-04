@@ -16,21 +16,23 @@ namespace CvWindowScanner.Modules
                 Template = template;
                 FoundFlag = foundFlag;
             }
-            
-            
         }
         
         private readonly List<Indicator> _indicators;
         private readonly List<Indicator> _exemptions;
         private readonly CvSearch.WindowRegion _scanRegion;
         private readonly double _threshold;
+        public readonly string Name;
+        public Point LastLocationScreen;
+        public Point LastLocationWindow;
         public bool State => _indicators.All(indicator => indicator.FoundFlag);
         
 
-        public GameState(CvSearch.WindowRegion scanRegion, List<Mat> indices,
-            double threshold, List<Mat> exemptions = default)
+        public GameState(string name, CvSearch.WindowRegion scanRegion, List<Mat> indices,
+            double threshold,  List<Mat> exemptions = default)
         {
             _threshold = threshold;
+            Name = name;
             _scanRegion = scanRegion;
             _indicators = new List<Indicator>();
             
@@ -54,7 +56,12 @@ namespace CvWindowScanner.Modules
                     indicator.Template,
                     _scanRegion,
                     _threshold,
-                    (b, p) => indicator.FoundFlag = b);
+                    (b, p) =>
+                    {
+                        LastLocationScreen = p;
+                        LastLocationWindow = p - WindowScanner.WindowPosition;
+                        indicator.FoundFlag = b;
+                    } );
             }
 
             if (_exemptions is null || _exemptions.Count <= 0) return;
@@ -65,7 +72,7 @@ namespace CvWindowScanner.Modules
                     indicator.Template,
                     _scanRegion,
                     _threshold,
-                    (b, p) => indicator.FoundFlag = b);
+                    (b, p) => indicator.FoundFlag = false);
             }
         }
 

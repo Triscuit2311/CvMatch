@@ -201,6 +201,7 @@
     <ItemGroup>
         <Compile Include="Modules\CvSearch.cs" />
         <Compile Include="Modules\DXGICapturer.cs" />
+        <Compile Include="Modules\GameObject.cs" />
         <Compile Include="Modules\GameState.cs" />
         <Compile Include="Modules\WindowScanner.cs" />
         <Compile Include="Program.cs" />
@@ -208,6 +209,7 @@
         <Compile Include="Utils\DebugScreenShotter.cs" />
         <Compile Include="Utils\Extensions.cs" />
         <Compile Include="Utils\HotKey.cs" />
+        <Compile Include="Utils\InputWrapper.cs" />
         <Compile Include="Utils\Natives.cs" />
     </ItemGroup>
     <ItemGroup>

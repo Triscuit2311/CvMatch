@@ -16,6 +16,7 @@ namespace CvWindowScanner.Modules
         private static List<ScanData> _scanQueue = new List<ScanData>();
         private static string _windowTitle;
         private static IntPtr _windowPtr = IntPtr.Zero;
+        public static Point WindowPosition = new Point();
         
         
 
@@ -90,12 +91,18 @@ namespace CvWindowScanner.Modules
             _scanThread.Join();
         }
 
+        public static bool UpdateWindow()
+        {
+            var flag = CvSearch.UpdateWindowCaptureLocation(_windowPtr, out WindowPosition);
+            return flag;
+        }
+
         private static void ScanThreadOperation()
         {
             DXGICapturer.Init();
             
             //todo: add UpdateWindow() so we may update the window externally at discretion
-            CvSearch.UpdateWindowCaptureLocation(_windowPtr, out var windowPosition);
+            UpdateWindow();
                
             while (true)
             {
@@ -103,6 +110,7 @@ namespace CvWindowScanner.Modules
                 if (_scanQueue.Count <= 0){ Thread.Sleep(100); continue;}
 
                 CvSearch.Refresh();
+                var toRemove = new List<ScanData>();
                 for (var i = 0; i <= _scanQueue.Count-1; i++)
                 {
                     var flag = CvSearch.FindImageOnCaptureWindowRegion(
@@ -111,12 +119,19 @@ namespace CvWindowScanner.Modules
                         _scanQueue[i].Threshold,
                         out var loc);
                     
-                    //todo: adjust location to be screen-relative
+                    // adjust location to be screen-relative
+                    loc += WindowPosition;
                     _scanQueue[i].PerformCallback(flag, loc);
                     
                     if(!_scanQueue[i].Preserve)
-                        _scanQueue.RemoveAt(0);
+                        toRemove.Add(_scanQueue[i]);
                 }
+
+                foreach (var scanData in toRemove)
+                {
+                    _scanQueue.Remove(scanData);
+                }
+                _scanQueue.TrimExcess();
                 
 
             }

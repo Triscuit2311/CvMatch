@@ -199,6 +199,9 @@
         </Reference>
     </ItemGroup>
     <ItemGroup>
+        <Compile Include="GameVariables\TarkovVars.cs" />
+        <Compile Include="Modules\BotAction.cs" />
+        <Compile Include="Modules\BotBase.cs" />
         <Compile Include="Modules\CvSearch.cs" />
         <Compile Include="Modules\DXGICapturer.cs" />
         <Compile Include="Modules\GameObject.cs" />
@@ -206,7 +209,7 @@
         <Compile Include="Modules\WindowScanner.cs" />
         <Compile Include="Program.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
-        <Compile Include="Utils\DebugScreenShotter.cs" />
+        <Compile Include="Utils\AppDebugFunctions.cs" />
         <Compile Include="Utils\Extensions.cs" />
         <Compile Include="Utils\HotKey.cs" />
         <Compile Include="Utils\InputWrapper.cs" />

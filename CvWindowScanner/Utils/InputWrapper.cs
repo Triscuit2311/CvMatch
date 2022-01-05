@@ -14,6 +14,37 @@ namespace CvWindowScanner.Utils
         private static extern IntPtr GetMessageExtraInfo();
         [DllImport("User32.dll")]
         public static extern bool SetCursorPos(int x, int y);
+        
+        [StructLayout(LayoutKind.Sequential)]
+        public struct POINT
+        {
+            public int X;
+            public int Y;
+
+            public static implicit operator Point(POINT point)
+            {
+                return new Point(point.X, point.Y);
+            }
+        }
+
+        /// <summary>
+        /// Retrieves the cursor's position, in screen coordinates.
+        /// </summary>
+        /// <see>See MSDN documentation for further information.</see>
+        [DllImport("user32.dll")]
+        public static extern bool GetCursorPos(out POINT lpPoint);
+
+        public static Point GetCursorPosition()
+        {
+            POINT lpPoint;
+            GetCursorPos(out lpPoint);
+            // NOTE: If you need error handling
+            // bool success = GetCursorPos(out lpPoint);
+            // if (!success)
+        
+            return lpPoint;
+        }
+        
         public static void SetCursorPos(Point screenLocation)
         {
             SetCursorPos(screenLocation.X, screenLocation.Y);

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Data;
 using OpenCvSharp;
 
 namespace CvWindowScanner.Modules
@@ -18,6 +19,7 @@ namespace CvWindowScanner.Modules
             }
         }
         
+        
         private readonly List<Indicator> _indicators;
         private readonly List<Indicator> _exemptions;
         private readonly CvSearch.WindowRegion _scanRegion;
@@ -25,13 +27,15 @@ namespace CvWindowScanner.Modules
         public readonly string Name;
         public Point LastLocationScreen;
         public Point LastLocationWindow;
+        public readonly int Priority;
         public bool State => _indicators.All(indicator => indicator.FoundFlag);
         
 
         public GameState(string name, CvSearch.WindowRegion scanRegion, List<Mat> indices,
-            double threshold,  List<Mat> exemptions = default)
+            double threshold, List<Mat> exemptions = default, int priority = 1)
         {
             _threshold = threshold;
+            Priority = priority;
             Name = name;
             _scanRegion = scanRegion;
             _indicators = new List<Indicator>();
@@ -43,7 +47,6 @@ namespace CvWindowScanner.Modules
                 _exemptions = new List<Indicator>();
                 InitExemptions(exemptions);
             }
-            
             PushIndicatorsToScanQueue();
         }
 

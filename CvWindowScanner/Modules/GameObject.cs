@@ -7,85 +7,24 @@ namespace CvWindowScanner.Modules
 {
     public class GameObject
     {
+        private bool _requested = false;
+        private CvSearch.WindowRegion _reqRegion = default;
         private Mat _template;
-        private readonly CvSearch.WindowRegion _scanRegion;
-        private readonly double _threshold;
-        public readonly string Name;
-        public Point LastLocationScreen;
-        public Point LastLocationWindow;
-        public bool Found;
-        private bool _keepTracking;
+        private double _threshold;
+        public Point ScreenLocation;
+        public Point WindowLocation;
 
-
-        public GameObject(string name, CvSearch.WindowRegion scanRegion,
-            double threshold, Mat template)
+        public GameObject(Mat template, double threshold)
         {
-            _threshold = threshold;
             _template = template;
-            Name = name;
-            _scanRegion = scanRegion;
+            _threshold = threshold;
         }
 
-        public void KeepTracking()
+        public bool FindObject(CvSearch.WindowRegion region, out Point pt,
+            double threshold = -1, int waitTime = 500)
         {
-            if (_keepTracking)
-                return;
-            _keepTracking = true;
-
-            WindowScanner.PushToQueue(
-                true,
-                _template,
-                _scanRegion,
-                _threshold,
-                (b, p) =>
-                {
-                    Found = b;
-                    LastLocationScreen = p;
-                    LastLocationWindow = p - WindowScanner.WindowPosition;
-                });
-        }
-
-        public void FindPassive()
-        {
-            if (_keepTracking)
-                return;
-            WindowScanner.PushToQueue(
-                false,
-                _template,
-                _scanRegion,
-                _threshold,
-                (b, p) =>
-                {
-                    Found = b;
-                    LastLocationScreen = p;
-                    LastLocationWindow = p - WindowScanner.WindowPosition;
-                });
-        }
-        
-        public bool WaitForFind(int msTimeout)
-        {
-            for (var i = 0; i < msTimeout/100; i++)
-            {
-                if (!_keepTracking)
-                {
-                    WindowScanner.PushToQueue(
-                        false,
-                        _template,
-                        _scanRegion,
-                        _threshold,
-                        (b, p) =>
-                        {
-                            Found = b;
-                            LastLocationScreen = p;
-                            LastLocationWindow = p - WindowScanner.WindowPosition;
-                        });
-                }
-                Thread.Sleep(100);
-                if (Found)
-                    return true;
-            }
-
-            return false;
+            if (threshold < 0) threshold = _threshold;
+            return CvSearch.FindImageOnCaptureWindowRegion(region, _template, threshold, out pt);
         }
         
     }

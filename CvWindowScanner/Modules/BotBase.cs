@@ -37,10 +37,11 @@ namespace CvWindowScanner.Modules
                     flag = true;
                 }
                 
-                BotAction.StopCycle(_currentState, _gameCycles, flag && _currentState != _lastState);
-                
+                if(flag)
+                    BotAction.StopCycle(_currentState, _gameCycles, _currentState != _lastState);
                 if (!flag || _currentState == _lastState) continue;
                 _lastState = _currentState;
+
 
                 Console.WriteLine($"[{_gameCycles}] State: {_currentState.Name}");
                 

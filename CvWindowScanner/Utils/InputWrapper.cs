@@ -56,6 +56,12 @@ namespace CvWindowScanner.Utils
                 WindowScanner.WindowPosition.Y+windowOffset.Y);
         }
 
+        public static void ClickOnInWindow(Point windowOffset)
+        {
+            SetCursorWindowRelative(windowOffset);
+            ClickAtCurrent();
+        }
+
         
         public static void MouseScroll(int clicks, bool up = false)
         {

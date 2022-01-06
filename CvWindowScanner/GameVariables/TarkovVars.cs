@@ -167,6 +167,14 @@ namespace CvWindowScanner.GameVariables
                 {
                     "MapSelectReadyButton",
                     new Point(691, 783)
+                },
+                {
+                    "ReturnToMainMenuButtonPostRaid",
+                    new Point(524, 789)
+                },
+                {
+                    "ConfrimReturnToMainMenu",
+                    new Point(470, 461)
                 }
             };
 

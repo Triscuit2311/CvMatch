@@ -32,11 +32,12 @@ namespace CvWindowScanner.Modules
                 foreach (var state in GameStates.Where(state => state.State))
                 {
                     if (priority >= state.Priority) continue;
+                    priority = state.Priority;
                     _currentState = state;
                     flag = true;
                 }
                 
-                BotAction.Cycle(_currentState, _gameCycles, flag);
+                BotAction.StopCycle(_currentState, _gameCycles, flag && _currentState != _lastState);
                 
                 if (!flag || _currentState == _lastState) continue;
                 _lastState = _currentState;

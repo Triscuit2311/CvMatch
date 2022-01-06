@@ -13,7 +13,8 @@ namespace CvWindowScanner.Modules
         private static Thread _scanThread;
         private static bool _threadStopFlag;
         public static bool Initialized { get; private set; }
-        private static List<ScanData> _scanQueue = new List<ScanData>();
+        private static List<ScanData> _stateQueue = new List<ScanData>();
+
         private static string _windowTitle;
         private static IntPtr _windowPtr = IntPtr.Zero;
         public static Point WindowPosition = new Point();
@@ -26,11 +27,9 @@ namespace CvWindowScanner.Modules
             public double Threshold;
             public readonly CvSearch.WindowRegion Region;
             private readonly Action<bool, Point> _callback;
-            public bool Preserve = false;
 
-            public ScanData(bool preserve, Mat template, CvSearch.WindowRegion region, double threshold, Action<bool, Point> callback)
+            public ScanData(Mat template, CvSearch.WindowRegion region, double threshold, Action<bool, Point> callback)
             {
-                Preserve = preserve;
                 Region = region;
                 Template = template;
                 _callback = callback;
@@ -45,21 +44,20 @@ namespace CvWindowScanner.Modules
         }
 
         /// <summary>
-        /// Pushes new scan to scanning queue.
+        /// Pushes new scan to state scanning queue.
         /// </summary>
-        /// <param name="preserve">If true, scan data will persist. Otherwise scan will be run once and then removed from scan queue.</param>
         /// <param name="template">Template image to scan for.</param>
         /// <param name="region">Window region to scan for this template.</param>
         /// <param name="threshold">Threshold at which match must meet to succeed.</param>
         /// <param name="callback">Success flag and Screen Position captured for callback.</param>
         /// <exception cref="Exception">Throw if window scanner needs to be initialized. Use Init().</exception>
-        public static void PushToQueue(bool preserve, Mat template, CvSearch.WindowRegion region,double threshold, Action<bool, Point> callback)
+        public static void PushToStateQueue( Mat template, CvSearch.WindowRegion region,
+            double threshold, Action<bool, Point> callback)
         {
             if (!Initialized)
                 throw new Exception("WindowScanner needs to be initialized.");
             
-            _scanQueue.Add(new ScanData(
-                preserve,
+            _stateQueue.Add(new ScanData(
                 template,
                 region,
                 threshold,
@@ -74,8 +72,7 @@ namespace CvWindowScanner.Modules
             _windowTitle = windowTitle;
 
             if (!Natives.GetHwnd(_windowTitle, out _windowPtr, true)) return;
-
-
+            
             Initialized = true;
             _scanThread = new Thread(new ThreadStart(ScanThreadOperation));
             _scanThread.Start();
@@ -107,31 +104,21 @@ namespace CvWindowScanner.Modules
             while (true)
             {
                 if (_threadStopFlag) break;
-                if (_scanQueue.Count <= 0){ Thread.Sleep(100); continue;}
+                if (_stateQueue.Count <= 0){ Thread.Sleep(100); continue;}
 
                 CvSearch.Refresh();
-                var toRemove = new List<ScanData>();
-                for (var i = 0; i <= _scanQueue.Count-1; i++)
+                for (var i = 0; i <= _stateQueue.Count-1; i++)
                 {
                     var flag = CvSearch.FindImageOnCaptureWindowRegion(
-                        _scanQueue[i].Region,
-                        _scanQueue[i].Template,
-                        _scanQueue[i].Threshold,
+                        _stateQueue[i].Region,
+                        _stateQueue[i].Template,
+                        _stateQueue[i].Threshold,
                         out var loc);
                     
                     // adjust location to be screen-relative
                     loc += WindowPosition;
-                    _scanQueue[i].PerformCallback(flag, loc);
-                    
-                    if(!_scanQueue[i].Preserve)
-                        toRemove.Add(_scanQueue[i]);
+                    _stateQueue[i].PerformCallback(flag, loc);
                 }
-
-                foreach (var scanData in toRemove)
-                {
-                    _scanQueue.Remove(scanData);
-                }
-                _scanQueue.TrimExcess();
                 
 
             }

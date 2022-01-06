@@ -7,9 +7,10 @@ namespace CvWindowScanner.GameVariables
     public static class TarkovVars
     {
         public static List<GameState> GameStates = default;
-        public static void  SetupStates()
-        {
+        
 
+        public static void  Setup()
+        {
             GameStates = new List<GameState>
             {
                 new GameState(
@@ -136,9 +137,11 @@ namespace CvWindowScanner.GameVariables
                     },
                     0.9)
             };
-    }
+            
 
-    public static Dictionary<string, Point> ConstantPosOffsets = new Dictionary<string, Point>
+        }
+
+        public static Dictionary<string, Point> ConstantPosOffsets = new Dictionary<string, Point>
             {
                 {
                     "GameAreaRoot",
@@ -175,16 +178,27 @@ namespace CvWindowScanner.GameVariables
                 {
                     "ConfrimReturnToMainMenu",
                     new Point(470, 461)
-                }
+                },               
+                {
+                    "PocketOneLocation",
+                    new Point(394, 211)
+                },                {
+                    "InventoryButtonLocation",
+                    new Point(525, 635)
+
+                },
+                
             };
 
-            // public GameObject go = new GameObject(
-            //     "Grenade",
-            //     CvSearch.WindowRegion.FullWindow,
-            //     0.8,
-            //     Cv2.ImRead(
-            //         "C:\\Users\\trisc\\RiderProjects\\TarkovTests\\CvWindowScanner\\img\\Tarkov\\f1_grenade.bmp")
-            // );
+        public static Dictionary<string, GameObject> GameObjects = new Dictionary<string, GameObject>
+        {
+            {
+                "F1Grenade",
+            new GameObject(
+                Cv2.ImRead("C:\\Users\\trisc\\RiderProjects\\TarkovTests\\CvWindowScanner\\img\\Tarkov\\f1_grenade.bmp"),
+                    0.85)
+            }
+       };
 
     }
 }

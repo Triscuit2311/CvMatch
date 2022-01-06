@@ -10,6 +10,9 @@ namespace CvWindowScanner.Modules
     {
         private static Action<GameState,int,bool> _stopCycleCB;
         private static Action<GameState,int,bool> _threadCycleCB;
+        
+
+        public static bool Paused = false;
 
         private static int _threadSleep;
         private static Thread _scanThread;
@@ -39,14 +42,14 @@ namespace CvWindowScanner.Modules
                 if (_threadStopFlag) break;
                 Thread.Sleep(_threadSleep);
                 
-                if (_currentState == null) continue;
+                if (_currentState == null || Paused) continue;
                 _threadCycleCB(_currentState, _currentCycle, _isNewState);
             }
         }
         
         public static void StopCycle(GameState currentState, int currentCycle, bool isNewState)
         {
-            if (currentState is null) return;
+            if (currentState is null || Paused) return;
 
             _currentState = currentState;
             _currentCycle = currentCycle;

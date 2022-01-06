@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using CvWindowScanner.GameVariables;
 
 namespace CvWindowScanner.Modules
 {
@@ -21,8 +22,11 @@ namespace CvWindowScanner.Modules
                 Thread.Sleep(10); 
             }
             
+            TarkovTrackers.BotStartTime = DateTime.Now;
             while (WindowScanner.Initialized)
             {
+                TarkovTrackers.BotRunTime = DateTime.Now - TarkovTrackers.BotStartTime;
+                
                 _gameCycles++;
                 if (_gameCycles % windowRefreshCycles == 0) WindowScanner.UpdateWindow();
                 Thread.Sleep(cycleSleep);
@@ -43,8 +47,12 @@ namespace CvWindowScanner.Modules
                 _lastState = _currentState;
 
 
-                Console.WriteLine($"[{_gameCycles}] State: {_currentState.Name}");
-                
+                Console.WriteLine($"[{TarkovTrackers.BotRunTime.Days}:" +
+                                  $"{TarkovTrackers.BotRunTime.Hours}:" +
+                                  $"{TarkovTrackers.BotRunTime.Minutes}:" +
+                                  $"{TarkovTrackers.BotRunTime.Seconds}] " +
+                                  $"Raids: {TarkovTrackers.RaidsCompleted} | " +
+                                  $"State: {_currentState.Name}");
             }
             
         }

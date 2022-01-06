@@ -25,18 +25,20 @@ namespace CvWindowScanner.Modules
         private readonly CvSearch.WindowRegion _scanRegion;
         private readonly double _threshold;
         public readonly string Name;
+        public readonly string Tag;
         public Point LastLocationScreen;
         public Point LastLocationWindow;
         public readonly int Priority;
         public bool State => _indicators.All(indicator => indicator.FoundFlag);
         
 
-        public GameState(string name, CvSearch.WindowRegion scanRegion, List<Mat> indices,
+        public GameState(string name, string tag, CvSearch.WindowRegion scanRegion, List<Mat> indices,
             double threshold, List<Mat> exemptions = default, int priority = 1)
         {
             _threshold = threshold;
             Priority = priority;
             Name = name;
+            Tag = tag;
             _scanRegion = scanRegion;
             _indicators = new List<Indicator>();
             

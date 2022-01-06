@@ -5,7 +5,7 @@ using CvWindowScanner.Modules;
 namespace CvWindowScanner.Utils
 {
 
-    public static class AppDebugFunctions
+    public static class BotDeveloperHelpers
     {
         private static int _count;
         private static string _sessionId;
@@ -14,13 +14,26 @@ namespace CvWindowScanner.Utils
         {
             _sessionId = $"[{DateTime.Now.ToShortDateString().Replace('/','.')} @ {DateTime.Now.ToShortTimeString().Replace(':','.')}]";
             HotKeyManager.RegisterHotKey(Keys.Insert, KeyModifiers.NoRepeat);
-            //HotKeyManager.HotKeyPressed += SaveLastScreen;
-            HotKeyManager.HotKeyPressed += SaveMouseOffset;
-
+            HotKeyManager.RegisterHotKey(Keys.Home, KeyModifiers.NoRepeat);
+            HotKeyManager.HotKeyPressed += HotkeyHandler;
         }
         
 
-        private static void SaveMouseOffset(object sender, HotKeyEventArgs e)
+        public static void HotkeyHandler(object sender, HotKeyEventArgs e)
+        {
+            switch (e.Key)
+            {
+                case Keys.Insert:
+                    SaveLastScreen();
+                    break;
+                case Keys.Home:
+                    PrintCurPos();
+                    break;
+            }
+
+        }
+
+        public static void PrintCurPos()
         {
             var pt = InputWrapper.GetCursorPosition();
             Console.WriteLine($"Cursor Position:\n" +
@@ -29,7 +42,7 @@ namespace CvWindowScanner.Utils
             );
         }
 
-        private static void SaveLastScreen(object sender, HotKeyEventArgs hotKeyEventArgs)
+        public static void SaveLastScreen()
         {
             if (CvSearch.LastFrame.Empty())
             {

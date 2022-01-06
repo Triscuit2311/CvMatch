@@ -1,4 +1,6 @@
-﻿using CvWindowScanner.GameVariables;
+﻿using System;
+using System.Threading;
+using CvWindowScanner.GameVariables;
 using CvWindowScanner.Modules;
 using CvWindowScanner.Utils;
 
@@ -10,13 +12,13 @@ namespace CvWindowScanner
 
         public static void Main(string[] args)
         {
-            
             WindowScanner.Init("EscapeFromTarkov");
            
-            TarkovVars.SetupStates();
+            TarkovVars.Setup();
             BotAction.Init(TarkovActions.StopCycle,TarkovActions.AsyncCycle,100);
             
-            BotDeveloperHelpers.Setup();
+            BotHotkeyHandler.Setup();
+            DeveloperHotkeys.Setup();
             
             BotBase.Run(TarkovVars.GameStates); //main loop
             

@@ -13,7 +13,17 @@ namespace CvWindowScanner.GameVariables
             GameStates = new List<GameState>
             {
                 new GameState(
+                    "AFK Notification",
+                    "AFK",
+                    CvSearch.WindowRegion.FullWindow,                        
+                    new List<Mat>
+                    {
+                        Cv2.ImRead("C:\\Users\\trisc\\RiderProjects\\TarkovTests\\CvWindowScanner\\img\\Tarkov\\AFK_title.bmp")
+                    },
+                    0.8, priority:2),
+                new GameState(
                     "In Game",
+                    "INGAME",
                     CvSearch.WindowRegion.UpperHalf,
                     new List<Mat>
                     {
@@ -27,6 +37,7 @@ namespace CvWindowScanner.GameVariables
                     0.9),
                 new GameState(
                     "Main Menu",
+                    "MAINMENU",
                     CvSearch.WindowRegion.LowerLeft,
                     new List<Mat>
                     {
@@ -36,6 +47,7 @@ namespace CvWindowScanner.GameVariables
                     0.9),
                 new GameState(
                     "Inventory",
+                    "INVENTORY",
                     CvSearch.WindowRegion.LowerCenter,
                     new List<Mat>
                     {
@@ -45,6 +57,7 @@ namespace CvWindowScanner.GameVariables
                     0.9),
                 new GameState(
                     "PMC Select -> PMC Selected",
+                    "PMCSELECTED",
                     CvSearch.WindowRegion.LowerCenter,
                     new List<Mat>
                     {
@@ -54,6 +67,7 @@ namespace CvWindowScanner.GameVariables
                     0.9),
                 new GameState(
                     "PMC Select -> SCAV Selected",
+                    "SCAVSELECTED",
                     CvSearch.WindowRegion.LowerCenter,
                     new List<Mat>
                     {
@@ -63,6 +77,7 @@ namespace CvWindowScanner.GameVariables
                     0.9),
                 new GameState(
                     "Map Select -> Factory Selected",
+                    "FACTORYSELECTED",
                     CvSearch.WindowRegion.MiddleCenter,
                     new List<Mat>
                     {
@@ -72,6 +87,7 @@ namespace CvWindowScanner.GameVariables
                     0.9),
                 new GameState(
                     "Map Select -> Factory Unselected",
+                    "FACTORYUNSELECTED",
                     CvSearch.WindowRegion.MiddleCenter,
                     new List<Mat>
                     {
@@ -81,6 +97,7 @@ namespace CvWindowScanner.GameVariables
                     0.9),
                 new GameState(
                     "Loading raid -> Loading",
+                    "LOADINGRAID",
                     CvSearch.WindowRegion.UpperCenter,
                     new List<Mat>
                     {
@@ -90,6 +107,7 @@ namespace CvWindowScanner.GameVariables
                     0.9),
                 new GameState(
                     "Loading raid -> Starting",
+                    "STARTINGRAID",
                     CvSearch.WindowRegion.MiddleCenter,
                     new List<Mat>
                     {
@@ -99,6 +117,7 @@ namespace CvWindowScanner.GameVariables
                     0.9),
                 new GameState(
                     "Post Raid -> Raid Ended",
+                    "RAIDEND",
                     CvSearch.WindowRegion.LowerCenter,
                     new List<Mat>
                     {
@@ -108,6 +127,7 @@ namespace CvWindowScanner.GameVariables
                     0.9),
                 new GameState(
                     "Post Raid -> Confirm Return to Main Menu",
+                    "CONFIRMMAINMENURETURN",
                     CvSearch.WindowRegion.MiddleCenter,
                     new List<Mat>
                     {
@@ -123,6 +143,10 @@ namespace CvWindowScanner.GameVariables
                 {
                     "GameAreaRoot",
                     new Point(15, 50)
+                },
+                {
+                    "ExitAfkMessage",
+                    new Point(524, 455)
                 },
                 {
                     "EscapeFromTarkovButton",

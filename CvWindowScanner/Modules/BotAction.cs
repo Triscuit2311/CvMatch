@@ -12,7 +12,7 @@ namespace CvWindowScanner.Modules
         private static Action<GameState,int,bool> _threadCycleCB;
         
 
-        public static bool Paused = false;
+
 
         private static int _threadSleep;
         private static Thread _scanThread;
@@ -21,6 +21,7 @@ namespace CvWindowScanner.Modules
         private static GameState _currentState;
         private static int _currentCycle;
         private static bool _isNewState;
+        private static bool _initialized = false;
         
         
 
@@ -30,9 +31,14 @@ namespace CvWindowScanner.Modules
             _stopCycleCB = stopCycleCallback;
             _threadCycleCB = threadCycleCallback;
             _threadSleep = threadSleep;
-            
-            _scanThread = new Thread(new ThreadStart(ThreadFunction));
-            _scanThread.Start();
+
+            if (!_initialized)
+            {
+                _scanThread = new Thread(new ThreadStart(ThreadFunction));
+                _scanThread.Start();
+            }
+
+            _initialized = true;
         }
 
         private static void ThreadFunction()
@@ -42,14 +48,14 @@ namespace CvWindowScanner.Modules
                 if (_threadStopFlag) break;
                 Thread.Sleep(_threadSleep);
                 
-                if (_currentState == null || Paused) continue;
+                if (_currentState == null || BotControls.ActionPause || BotControls.GlobalPause) continue;
                 _threadCycleCB(_currentState, _currentCycle, _isNewState);
             }
         }
         
         public static void StopCycle(GameState currentState, int currentCycle, bool isNewState)
         {
-            if (currentState is null || Paused) return;
+            if (currentState is null || BotControls.ActionPause || BotControls.GlobalPause) return;
 
             _currentState = currentState;
             _currentCycle = currentCycle;

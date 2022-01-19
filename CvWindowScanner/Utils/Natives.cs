@@ -47,30 +47,31 @@ namespace CvWindowScanner.Utils
         }
         
 
-        public static bool GetHwnd(string title,out IntPtr ptr, bool showinfo = false)
+        public static bool GetHwnd(string title,IntPtr oldPtr, out IntPtr ptr, bool showinfo = false)
         {
+
             foreach (var window in Process.GetProcesses())
             {
                 window.Refresh();
-                if (window.MainWindowHandle != IntPtr.Zero && window.MainWindowTitle.ToLower().Contains(title.ToLower()))
+                try
                 {
-                    if (showinfo)
+                    if( window.HasExited  ||
+                       !window.Responding ||
+                        window.MainWindowHandle == IntPtr.Zero ||
+                       !window.MainWindowTitle.ToLower().Contains(title.ToLower())) continue;
+                    
+                    if (showinfo && oldPtr != window.MainWindowHandle)
                     {
-                        Console.WriteLine($"[{window.MainWindowTitle}] -> [0x{window.MainWindowHandle.ToInt32():X}]");
-                        
-                        
+                        Console.WriteLine(
+                            $"[{window.MainWindowTitle}] -> [0x{window.MainWindowHandle.ToInt32():X}]");
                     }
 
                     ptr = window.MainWindowHandle;
                     return true;
                 }
-            }
-            Console.WriteLine($"Window with title [{title}] not found. Windows available:");
-            foreach (var window in Process.GetProcesses())
-            {
-                if (window.MainWindowHandle != IntPtr.Zero)
+                catch (Exception e)
                 {
-                    Console.WriteLine($"\t{window.MainWindowTitle}");
+                    //Console.WriteLine($"Handled Exception in Natives: {e.Message}");
                 }
             }
 
@@ -83,7 +84,6 @@ namespace CvWindowScanner.Utils
         //     return Screen.PrimaryScreen.Bounds.Width / SystemParameters.PrimaryScreenWidth;
         // }
         
-
     }
     
     

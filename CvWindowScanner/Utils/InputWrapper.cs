@@ -162,6 +162,72 @@ namespace CvWindowScanner.Utils
             SendInput((uint)inputs.Length, inputs, Marshal.SizeOf(typeof(Input)));
         }
         
+        public static void PressKeysFor( VK keyA, VK keyB, int time)
+        {
+            Input[] inputs = {
+                new Input
+                {
+                    type = (int)InputType.Keyboard,
+                    u = new InputUnion
+                    {
+                        ki = new KeyboardInput
+                        {
+                            wVk = (ushort)keyA,
+                            dwFlags = (uint)KeyEventF.KeyDown,
+                            dwExtraInfo = GetMessageExtraInfo()
+                        }
+                    }
+                },
+                new Input
+                {
+                    type = (int)InputType.Keyboard,
+                    u = new InputUnion
+                    {
+                        ki = new KeyboardInput
+                        {
+                            wVk = (ushort)keyB,
+                            dwFlags = (uint)KeyEventF.KeyDown,
+                            dwExtraInfo = GetMessageExtraInfo()
+                        }
+                    }
+                }
+            };
+
+            SendInput((uint)inputs.Length, inputs, Marshal.SizeOf(typeof(Input)));
+            Thread.Sleep(time);
+
+            inputs = new Input[] {
+                new Input
+                {
+                    type = (int)InputType.Keyboard,
+                    u = new InputUnion
+                    {
+                        ki = new KeyboardInput
+                        {
+                            wVk = (ushort)keyA,
+                            dwFlags = (uint)KeyEventF.KeyUp,
+                            dwExtraInfo = GetMessageExtraInfo()
+                        }
+                    }
+                },
+                new Input
+                {
+                    type = (int)InputType.Keyboard,
+                    u = new InputUnion
+                    {
+                        ki = new KeyboardInput
+                        {
+                            wVk = (ushort)keyB,
+                            dwFlags = (uint)KeyEventF.KeyUp,
+                            dwExtraInfo = GetMessageExtraInfo()
+                        }
+                    }
+                }
+            };
+            
+            SendInput((uint)inputs.Length, inputs, Marshal.SizeOf(typeof(Input)));
+        }
+        
         public static void MoveMouseRelative(int x,int y)
         {
             Input[] inputs = {
@@ -185,7 +251,7 @@ namespace CvWindowScanner.Utils
         }
         
 
-        public static void ClickAtCurrent(bool rightClick = false)
+        public static void ClickAtCurrent(bool rightClick = false, bool release = true)
         {
             Input[] inputs = new Input[]
             {
@@ -215,51 +281,10 @@ namespace CvWindowScanner.Utils
                 }
             };
 
-            SendInput((uint)inputs.Length, inputs, Marshal.SizeOf(typeof(Input)));
+            SendInput((uint)(inputs.Length - (release? 0 : 1)), inputs, Marshal.SizeOf(typeof(Input)));
         }
 
-
-        public static void SomeTestKBInput()
-        {
-            Input[] inputs = {
-                new Input
-                {
-                    type = (int)InputType.Keyboard,
-                    u = new InputUnion
-                    {
-                        ki = new KeyboardInput
-                        {
-                            wVk = 0,
-                            wScan = 0x11, // W
-                            dwFlags = (uint)(KeyEventF.KeyDown | KeyEventF.Scancode),
-                            dwExtraInfo = GetMessageExtraInfo()
-                        }
-                    }
-                }
-            };
-
-            SendInput((uint)inputs.Length, inputs, Marshal.SizeOf(typeof(Input)));
-            Thread.Sleep(2000);
-
-            inputs = new[]
-            {
-                new Input
-                {
-                    type = (int) InputType.Keyboard,
-                    u = new InputUnion
-                    {
-                        ki = new KeyboardInput
-                        {
-                            wVk = 0,
-                            wScan = 0x11, // W
-                            dwFlags = (uint) (KeyEventF.KeyUp | KeyEventF.Scancode),
-                            dwExtraInfo = GetMessageExtraInfo()
-                        }
-                    }
-                }
-            };
-            SendInput((uint)inputs.Length, inputs, Marshal.SizeOf(typeof(Input)));
-        }
+        
         
         [StructLayout(LayoutKind.Sequential)]
         public struct KeyboardInput

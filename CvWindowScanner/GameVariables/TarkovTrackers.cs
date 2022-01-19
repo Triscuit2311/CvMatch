@@ -14,7 +14,7 @@ namespace CvWindowScanner.GameVariables
         public static bool HoldingGrenade = false;
         public static bool OutOfGrenades = false;
         public static int GrenadeFindRetries = 10;
-        public static double RaidLengthGrenadeThreshold = 30;
+        public static double RaidLengthGrenadeThreshold = 60;
         public static double TimeInRaidBeforeUseGrenade = 15;
         
         
@@ -22,7 +22,14 @@ namespace CvWindowScanner.GameVariables
         public static DateTime CurrentRaidStartTime;
         public static TimeSpan LastRaidTotalTime;
         
-        
+        // Queue Timer
+        public static DateTime CurrentQueueStartTime;
+        public static TimeSpan CurrentQueueTime;
+        public static double QueueTimeoutThreshold = 60 * 10;
+
+        // Menu Timer
+
+
         //TODO: Add auto-restart timer on long game load time.
     }
 }

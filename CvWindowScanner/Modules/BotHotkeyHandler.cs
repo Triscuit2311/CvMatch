@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
+using CvWindowScanner.GameVariables;
 using CvWindowScanner.Utils;
 
 namespace CvWindowScanner.Modules
@@ -9,7 +10,8 @@ namespace CvWindowScanner.Modules
 
         public static void Setup()
         {
-                       HotKeyManager.RegisterHotKey(Keys.End, KeyModifiers.NoRepeat);
+            HotKeyManager.RegisterHotKey(Keys.End, KeyModifiers.NoRepeat);
+            HotKeyManager.RegisterHotKey(Keys.Oemtilde, KeyModifiers.NoRepeat);
             HotKeyManager.HotKeyPressed += HotkeyHandler;
         }
         
@@ -19,10 +21,11 @@ namespace CvWindowScanner.Modules
             switch (e.Key)
             {
                 case Keys.End:
-                    BotAction.Paused = !BotAction.Paused;
-                    Console.WriteLine($"Bot Actions are now {(BotAction.Paused? "Paused":"Resumed")}.");
+                    BotControls.ActionPause = !BotControls.ActionPause;
+                    Console.WriteLine($"Bot Actions are now {(BotControls.ActionPause? "Paused":"Resumed")}.");
                     break;
-
+                case Keys.Oemtilde:
+                    break;
             }
 
         }

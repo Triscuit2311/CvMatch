@@ -7,7 +7,11 @@ namespace CvWindowScanner.GameVariables
     public static class TarkovVars
     {
         public static List<GameState> GameStates = default;
-        
+
+        public static List<GameState> GetStates()
+        {
+            return GameStates;
+        }
 
         public static void  Setup()
         {
@@ -21,7 +25,7 @@ namespace CvWindowScanner.GameVariables
                     {
                         Cv2.ImRead("C:\\Users\\trisc\\RiderProjects\\TarkovTests\\CvWindowScanner\\img\\Tarkov\\AFK_title.bmp")
                     },
-                    0.8, priority:2),
+                    0.85, priority:2),
                 new GameState(
                     "In Game",
                     "INGAME",
@@ -135,9 +139,28 @@ namespace CvWindowScanner.GameVariables
                         Cv2.ImRead(
                             "C:\\Users\\trisc\\RiderProjects\\TarkovTests\\CvWindowScanner\\img\\Tarkov\\proceed_to_main_menu_text.bmp")
                     },
+                    0.9),
+                new GameState(
+                    "Left Raid -> Select Escape Screen",
+                    "ESCAPEAFTERLEAVING",
+                    CvSearch.WindowRegion.MiddleCenter,
+                    new List<Mat>
+                    {
+                        Cv2.ImRead(
+                            "C:\\Users\\trisc\\RiderProjects\\TarkovTests\\CvWindowScanner\\img\\Tarkov\\PMC_still_in_raid.bmp")
+                    },
+                    0.9),
+                new GameState(
+                    "Left Raid -> Reconnect",
+                    "RECONNECTTORAID",
+                    CvSearch.WindowRegion.MiddleCenter,
+                    new List<Mat>
+                    {
+                        Cv2.ImRead(
+                            "C:\\Users\\trisc\\RiderProjects\\TarkovTests\\CvWindowScanner\\img\\Tarkov\\tried_to_leave_dc.bmp")
+                    },
                     0.9)
             };
-            
 
         }
 
@@ -182,10 +205,14 @@ namespace CvWindowScanner.GameVariables
                 {
                     "PocketOneLocation",
                     new Point(394, 211)
-                },                {
+                },
+                {
                     "InventoryButtonLocation",
                     new Point(525, 635)
-
+                },
+                {
+                    "ReconnectButtonLocation",
+                    new Point(525, 719)
                 },
                 
             };
@@ -197,7 +224,31 @@ namespace CvWindowScanner.GameVariables
             new GameObject(
                 Cv2.ImRead("C:\\Users\\trisc\\RiderProjects\\TarkovTests\\CvWindowScanner\\img\\Tarkov\\f1_grenade.bmp"),
                     0.85)
-            }
+            },
+            {
+                "RGD5Grenade",
+                new GameObject(
+                    Cv2.ImRead("C:\\Users\\trisc\\RiderProjects\\TarkovTests\\CvWindowScanner\\img\\Tarkov\\rgd5_grenade.bmp"),
+                    0.85)
+            },
+            {
+                "VOG25Grenade",
+                new GameObject(
+                    Cv2.ImRead("C:\\Users\\trisc\\RiderProjects\\TarkovTests\\CvWindowScanner\\img\\Tarkov\\vog25_grenade.bmp"),
+                    0.85)
+            },
+            {
+                "VOG17Grenade",
+                new GameObject(
+                    Cv2.ImRead("C:\\Users\\trisc\\RiderProjects\\TarkovTests\\CvWindowScanner\\img\\Tarkov\\vog17_grenade.bmp"),
+                    0.85)
+            }, 
+            {
+                "M67Grenade",
+                new GameObject(
+                    Cv2.ImRead("C:\\Users\\trisc\\RiderProjects\\TarkovTests\\CvWindowScanner\\img\\Tarkov\\m67_grenade.bmp"),
+                    0.85)
+            },
        };
 
     }

@@ -71,11 +71,17 @@ namespace CvWindowScanner.Modules
         {
             _windowTitle = windowTitle;
 
-            if (!Natives.GetHwnd(_windowTitle, out _windowPtr, true)) return;
+
+            UpdateWindowPointer();
             
+            if (!Initialized)
+            {
+                _scanThread = new Thread(new ThreadStart(ScanThreadOperation));
+                _scanThread.Start();
+            }
+            _stateQueue.Clear();
+
             Initialized = true;
-            _scanThread = new Thread(new ThreadStart(ScanThreadOperation));
-            _scanThread.Start();
         }
         
         /// <summary>
@@ -88,6 +94,14 @@ namespace CvWindowScanner.Modules
             _scanThread.Join();
         }
 
+        public static void UpdateWindowPointer()
+        {
+            while (!Natives.GetHwnd(_windowTitle,_windowPtr, out _windowPtr, true))
+            {
+                Console.WriteLine($"Window [{_windowTitle}] Not found trying again in 5 seconds.");
+                Thread.Sleep(5000);
+            }
+        }
         public static bool UpdateWindow()
         {
             var flag = CvSearch.UpdateWindowCaptureLocation(_windowPtr, out WindowPosition);
@@ -103,21 +117,29 @@ namespace CvWindowScanner.Modules
                
             while (true)
             {
+                if (BotControls.GlobalPause)
+                {
+                    Thread.Sleep(100);
+                    continue;
+                }
+                
                 if (_threadStopFlag) break;
                 if (_stateQueue.Count <= 0){ Thread.Sleep(100); continue;}
 
                 CvSearch.Refresh();
                 for (var i = 0; i <= _stateQueue.Count-1; i++)
                 {
-                    var flag = CvSearch.FindImageOnCaptureWindowRegion(
-                        _stateQueue[i].Region,
-                        _stateQueue[i].Template,
-                        _stateQueue[i].Threshold,
-                        out var loc);
-                    
-                    // adjust location to be screen-relative
-                    loc += WindowPosition;
-                    _stateQueue[i].PerformCallback(flag, loc);
+
+                        var flag = CvSearch.FindImageOnCaptureWindowRegion(
+                            _stateQueue[i].Region,
+                            _stateQueue[i].Template,
+                            _stateQueue[i].Threshold,
+                            out var loc);
+
+                        // adjust location to be screen-relative
+                        loc += WindowPosition;
+                        _stateQueue[i].PerformCallback(flag, loc);
+
                 }
                 
 

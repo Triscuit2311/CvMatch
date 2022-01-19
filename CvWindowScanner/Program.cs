@@ -12,16 +12,16 @@ namespace CvWindowScanner
 
         public static void Main(string[] args)
         {
-            WindowScanner.Init("EscapeFromTarkov");
-           
-            TarkovVars.Setup();
-            BotAction.Init(TarkovActions.StopCycle,TarkovActions.AsyncCycle,100);
+            BotControls.TargetBot(
+                "EscapeFromTarkov",
+                TarkovActions.StopCycle,
+                TarkovActions.AsyncCycle,
+                100,
+                TarkovVars.Setup,
+                TarkovVars.GetStates);
             
-            BotHotkeyHandler.Setup();
-            DeveloperHotkeys.Setup();
-            
-            BotBase.Run(TarkovVars.GameStates); //main loop
-            
+            //BotBase.SetStates(TarkovVars.GameStates);
+            BotBase.Run();
             WindowScanner.Stop();
         }
 

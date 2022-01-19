@@ -56,8 +56,7 @@ namespace CvWindowScanner.Modules
         {
             foreach (var indicator in _indicators)
             {
-                WindowScanner.PushToQueue(
-                    true,
+                WindowScanner.PushToStateQueue(
                     indicator.Template,
                     _scanRegion,
                     _threshold,
@@ -72,8 +71,7 @@ namespace CvWindowScanner.Modules
             if (_exemptions is null || _exemptions.Count <= 0) return;
             foreach (var indicator in _exemptions)
             {
-                WindowScanner.PushToQueue(
-                    true,
+                WindowScanner.PushToStateQueue(
                     indicator.Template,
                     _scanRegion,
                     _threshold,

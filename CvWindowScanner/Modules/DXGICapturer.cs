@@ -131,6 +131,11 @@ namespace CvWindowScanner.Modules
                         Thread.Sleep(1000);
                         continue;
                     }
+                    if (BotControls.GlobalPause)
+                    {
+                        Thread.Sleep(100);
+                        continue;
+                    }
 
                     try
                     {

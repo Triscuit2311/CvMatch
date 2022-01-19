@@ -26,7 +26,7 @@
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
         <PlatformTarget>AnyCPU</PlatformTarget>
-        <DebugType>pdbonly</DebugType>
+        <DebugType>none</DebugType>
         <Optimize>true</Optimize>
         <OutputPath>bin\Release\</OutputPath>
         <DefineConstants>TRACE</DefineConstants>
@@ -58,7 +58,6 @@
         </Reference>
         <Reference Include="SharpDX.Mathematics, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1">
           <HintPath>..\packages\SharpDX.Mathematics.4.2.0\lib\net45\SharpDX.Mathematics.dll</HintPath>
-          <Private>False</Private>
         </Reference>
         <Reference Include="System" />
         <Reference Include="System.AppContext, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
@@ -199,18 +198,23 @@
         </Reference>
     </ItemGroup>
     <ItemGroup>
+        <Compile Include="GameVariables\NotepadVars.cs" />
         <Compile Include="GameVariables\TarkovActions.cs" />
+        <Compile Include="GameVariables\TarkovTrackers.cs" />
         <Compile Include="GameVariables\TarkovVars.cs" />
         <Compile Include="Modules\BotAction.cs" />
         <Compile Include="Modules\BotBase.cs" />
+        <Compile Include="Modules\BotControls.cs" />
+        <Compile Include="Modules\BotHotkeyHandler.cs" />
         <Compile Include="Modules\CvSearch.cs" />
         <Compile Include="Modules\DXGICapturer.cs" />
         <Compile Include="Modules\GameObject.cs" />
+        <Compile Include="Modules\GameObjectManager.cs" />
         <Compile Include="Modules\GameState.cs" />
         <Compile Include="Modules\WindowScanner.cs" />
         <Compile Include="Program.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
-        <Compile Include="Utils\BotDeveloperHelpers.cs" />
+        <Compile Include="Utils\DeveloperHotkeys.cs" />
         <Compile Include="Utils\Extensions.cs" />
         <Compile Include="Utils\HotKey.cs" />
         <Compile Include="Utils\InputWrapper.cs" />

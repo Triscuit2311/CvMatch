@@ -13,10 +13,12 @@ namespace CvWindowScanner.Modules
         private static GameState _currentState = default;
         private static int _gameCycles = 0;
 
-        public static void Run(List<GameState> gameStates, int cycleSleep = 100, int windowRefreshCycles = 1000 )
+        public static void SetStates(List<GameState> gameStates)
         {
             GameStates = gameStates;
-            
+        }
+        public static void Run( int cycleSleep = 100, int windowRefreshCycles = 100 )
+        {
             while (!WindowScanner.Initialized)
             {
                 Thread.Sleep(10); 
@@ -25,14 +27,27 @@ namespace CvWindowScanner.Modules
             TarkovTrackers.BotStartTime = DateTime.Now;
             while (WindowScanner.Initialized)
             {
+                if (BotControls.GlobalPause)
+                {
+                    Thread.Sleep(100);
+                    continue;
+                }
                 TarkovTrackers.BotRunTime = DateTime.Now - TarkovTrackers.BotStartTime;
                 
                 _gameCycles++;
-                if (_gameCycles % windowRefreshCycles == 0) WindowScanner.UpdateWindow();
+
+                if (_gameCycles % windowRefreshCycles == 0)
+                {
+                    WindowScanner.UpdateWindowPointer();
+                    WindowScanner.UpdateWindow();
+                }
+                
                 Thread.Sleep(cycleSleep);
                 var flag = false;
 
                 var priority = 0;
+                
+                if (GameStates is null) continue;
                 foreach (var state in GameStates.Where(state => state.State))
                 {
                     if (priority >= state.Priority) continue;

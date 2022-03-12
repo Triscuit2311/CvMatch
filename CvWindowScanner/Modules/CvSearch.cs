@@ -189,9 +189,22 @@ namespace CvWindowScanner
         }
         private static TemplateMatchResults TemplateMatchWithThreshold(Mat img, Mat template, double threshold)
         {
-            Mat res = new Mat();
-            Cv2.MatchTemplate(img,template,res,TemplateMatchModes.CCoeffNormed);
-            Cv2.Threshold(res, res, threshold, 1.0, ThresholdTypes.Tozero);
+            if (img.Width == 0 || img.Height == 0 | template.Width == 0 || template.Height == 0)
+            {
+                return new TemplateMatchResults(false, new Point(0,0));
+            }
+            
+            var res = new Mat();
+            try
+            {
+                Cv2.MatchTemplate(img,template,res,TemplateMatchModes.CCoeffNormed);
+                Cv2.Threshold(res, res, threshold, 1.0, ThresholdTypes.Tozero);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return new TemplateMatchResults(false, new Point(0,0));
+            }
 
             Cv2.MinMaxLoc(res,
                 out double minVal,
@@ -199,14 +212,7 @@ namespace CvWindowScanner
                 out OpenCvSharp.Point minLoc,
                 out OpenCvSharp.Point maxLoc);
             
-           
-            if (maxVal >= threshold)
-            {
-
-                return new TemplateMatchResults(true, maxLoc);
-            }
-
-            return new TemplateMatchResults(false, minLoc);
+            return new TemplateMatchResults(maxVal >= threshold, maxLoc);
         }
 
         /// <summary>

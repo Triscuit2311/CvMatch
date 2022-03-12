@@ -14,9 +14,9 @@ namespace CvWindowScanner.Modules
             HotKeyManager.RegisterHotKey(Keys.Oemtilde, KeyModifiers.NoRepeat);
             HotKeyManager.HotKeyPressed += HotkeyHandler;
         }
-        
 
-        public static void HotkeyHandler(object sender, HotKeyEventArgs e)
+
+        private static void HotkeyHandler(object sender, HotKeyEventArgs e)
         {
             switch (e.Key)
             {

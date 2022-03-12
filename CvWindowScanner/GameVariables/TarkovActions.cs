@@ -60,12 +60,14 @@ namespace CvWindowScanner.GameVariables
                         TarkovTrackers.HoldingGrenade = false; // we never have grenade on exit
                         TarkovTrackers.RaidsCompleted++;
                     }
-
                     ClickReturnToMainMenu();
                     break;
+                
                 case "CONFIRMMAINMENURETURN":
+                    Thread.Sleep(500);
                     ConfirmReturnToMenu();
                     break;
+                
                 case "INVENTORY":
                     if (TarkovTrackers.NeedsGrenade && !TarkovTrackers.OutOfGrenades)
                     {
@@ -229,7 +231,7 @@ namespace CvWindowScanner.GameVariables
             InputWrapper.ClickAtCurrent();
             Thread.Sleep(500);
             InputWrapper.SetCursorWindowRelative(TarkovVars.ConstantPosOffsets["GameAreaRoot"]);
-            Thread.Sleep(250);
+            Thread.Sleep(1000);
             
             if (!TarkovVars.GameObjects[type].FindObject(CvSearch.WindowRegion.LeftHalf, out var pt2))
                 return false;

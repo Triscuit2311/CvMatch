@@ -1,4 +1,4 @@
-# CvWindowScanner
+# CvMatch
 ### Template Matching for any window, in C#.
 
 This project was an exploration of DXGI and OpenCv, intended as a base for some HID development projects. I've used this core for some automation projects as well, and I've left in some example code.
